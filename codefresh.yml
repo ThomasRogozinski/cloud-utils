@@ -1,0 +1,16 @@
+version: "1.0"
+
+steps:
+  main_clone:
+    title: Cloning repository...
+    type: git-clone
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: '${{CF_REVISION}}'
+  build:
+    title: Building Docker Image...
+    type: build
+    image_name: trogo/cloud-utils
+    tags: [ 'latest', '0.0.4' ]
+    dockerfile: Dockerfile.cloud-utils
+    working_directory: '${{clone}}'
+    registry: dockerhub
