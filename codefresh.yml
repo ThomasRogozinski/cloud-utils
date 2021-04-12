@@ -1,15 +1,32 @@
 version: "1.0"
 
+stages:
+  - build
+  - test
+
 steps:
   main_clone:
-    title: Cloning repository..
+    title: Cloning repository...
+    stage: build
     type: git-clone
     repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
     revision: '${{CF_REVISION}}'
   build:
     title: Building Docker Image...
+    stage: build
     type: build
-    image_name: trogo/cloud-utils
-    tags: [ 'latest', '0.0.3' ]
-    dockerfile: Dockerfile.cloud-utils
-    registry: dockerhub
+    image_name: cf-utils
+    tags: [ 'latest', '0.0.2' ]
+    dockerfile: Dockerfile.cf-utils
+    registry: aprart-docker.artifactory.gcp.anz
+    credentials:
+      username: "robot-clp-pipeline"
+      password: "${{robot-clp-pipeline}}" 
+  test:
+    title: Testing Docker Image...
+    stage: test
+    image: aprart-docker.artifactory.gcp.anz/cf-utils:0.0.2
+    commands:
+      - terraform --version
+      - aws --version
+      - python --version
