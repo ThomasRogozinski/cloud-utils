@@ -3,7 +3,6 @@ version: "1.0"
 stages:
   - clone
   - build
-  - push
   - test
 
 steps:
@@ -15,16 +14,15 @@ steps:
     revision: '${{CF_REVISION}}'
   build:
     title: Building Docker Image...
-    stage: build
     type: build
-    image_name: cf-utils
-    tag: 'latest'
-    dockerfile: Dockerfile.cf-utils
-    disable_push: true
+    image_name: trogo/cloud-utils
+    tags: [ 'latest', '0.0.4' ]
+    dockerfile: Dockerfile.cloud-utils
+    registry: dockerhub
   test:
     title: Testing Docker Image...
     stage: test
-    image: aprart-docker.artifactory.gcp.anz/cf-utils:0.0.2
+    image: trogo/cloud-utils:0.0.4
     commands:
       - terraform --version
       - aws --version
